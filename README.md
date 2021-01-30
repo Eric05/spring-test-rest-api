@@ -3,7 +3,10 @@ Rest-Api -> Maven Project with Spring and Hibernate
 
 1: Create Models and declare Primary Key / persistence
 
-    @Id @GeneratedValue(
+    @Entity(name = "students")
+    public class student {...
+    @Id 
+    @GeneratedValue(
     strategy = GenerationType.IDENTITY)
 
 2: Create Repo using Crud / percistence
