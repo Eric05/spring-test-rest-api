@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.NoSuchElementException;
 
 @Controller
 public class StudentController {
@@ -16,7 +19,7 @@ public class StudentController {
     @GetMapping("/students")
     public @ResponseBody
     Iterable<Student> getAllStudents() {
-        return studentService.getAllStudents();
+         return studentService.getAllStudents();
     }
 
     @GetMapping("/students/{id}")
@@ -28,7 +31,19 @@ public class StudentController {
     @PostMapping("/students")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addStudent(@RequestBody Student student) {
-        studentService.addStudent(student);
+        studentService.saveStudent(student);
+    }
+
+    @PutMapping("/students/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void updateStudent(@PathVariable("id") int id, @RequestBody Student student) {
+        try {
+            studentService.updateStudent(student, id);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found");
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/students/{id}")
